@@ -1,0 +1,9 @@
+## Interface: 11303
+## Title: AutoDeleteItems
+## Author: RainForDays
+## Notes: Automatically Delete Items
+## Version: 1.0
+## DefaultState: enabled
+## SavedVariablesPerCharacter: AutoDeleteItems
+
+AutoDeleteItems.lua
