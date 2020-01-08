@@ -24,7 +24,7 @@ end
 
 function events:VARIABLES_LOADED()
 
-  StaticPopupDialogs["DELETE_ITEM"].button3 = "Always"
+  StaticPopupDialogs["DELETE_ITEM"].button3 = "Auto-delete"
   StaticPopupDialogs["DELETE_ITEM"].OnAlt = function(self)
     local infoType, itemID, itemLink = GetCursorInfo()
     AutoDeleteItems[itemLink] = true
@@ -38,7 +38,8 @@ function events:BAG_UPDATE_DELAYED()
 
   for bag = 0, NUM_BAG_SLOTS do
     for slot = 1, GetNumBagSlots(bag) do
-      if itemLink = GetContainerItemLink(bag, slot) then
+      local itemLink = GetContainerItemLink(bag, slot)
+      if itemLink then
         if AutoDelete[itemLink] then
           PickupContainerItem(bag, slot)
           DeleteCursorItem()
