@@ -20,6 +20,12 @@ function events:ADDON_LOADED(name)
   if name ~= "AutoDeleteItems" then return end
   if AutoDeleteItems == nil then AutoDeleteItems = {} end
   AutoDeleteItems = AutoDeleteItems
+
+
+  SLASH_AUTODELETEITEMS1= "/ad";
+  SlashCmdList.AUTODELETEITEMS = function(msg)
+    core:SlashCommand(msg)
+  end
 end
 
 function events:VARIABLES_LOADED()
@@ -48,4 +54,34 @@ function events:BAG_UPDATE_DELAYED()
     end
   end
 
+end
+
+
+
+
+
+function core:SlashCommand(args)
+  local command, itemLinkChat, rest = strsplit(" ", args, 3)
+  command = command:lower()
+
+  if command == "save" then
+    local itemName = GetItemInfo(itemLinkChat)
+    if itemName then
+      for itemLink, _ in pairs(AutoDelete) do
+        if itemLink == itemLinkChat then
+          AutoDelete[itemLink] = nil
+          return
+        end
+      end
+    end
+  elseif command == "delete" then
+    local itemName = GetItemInfo(itemLinkChat)
+    if itemName then
+      AutoDelete[itemLinkChat] = true
+    end
+  else
+    core:Print("Available commands")
+    core:Print("  delete [item link]: delete the linked item")
+    core:Print("  save [item link]: do not delete the linked item")
+  end
 end
