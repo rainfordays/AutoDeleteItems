@@ -5,7 +5,7 @@ function core:Print(...)
 end
 
 
-
+core.prefix = "|cff42adf5/ad|r "
 
 local events = CreateFrame("Frame");
 events:RegisterEvent("ADDON_LOADED");
@@ -81,7 +81,7 @@ function core:SlashCommand(args)
     end
   else
     core:Print("Available commands")
-    core:Print("  delete [item link]: delete the linked item")
-    core:Print("  save [item link]: do not delete the linked item")
+    core:Print(core.prefix.."delete [item link]: delete the linked item")
+    core:Print(core.prefix.."save [item link]: do not delete the linked item")
   end
 end
