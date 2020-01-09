@@ -12,10 +12,11 @@ core.addonName = "|cff42adf5AutoDeleteItems|r "
 --[[
     ---- EVENT FRAME ----
 ]]
-local events = CreateFrame("Frame");
-events:RegisterEvent("ADDON_LOADED");
-events:RegisterEvent("VARIABLES_LOADED");
-events:RegisterEvent("BAG_UPDATE_DELAYED");
+local events = CreateFrame("Frame")
+events:RegisterEvent("ADDON_LOADED")
+events:RegisterEvent("VARIABLES_LOADED")
+events:RegisterEvent("PLAYER_ENTERING_WORLD")
+events:RegisterEvent("BAG_UPDATE_DELAYED")
 events:SetScript("OnEvent", function(self, event, ...)
   return self[event] and self[event](self, ...)
 end)
@@ -48,8 +49,16 @@ function events:VARIABLES_LOADED()
     AutoDelete[itemLink] = true -- Add item to autodelete
     DeleteCursorItem() -- Delete cursor item
   end
+end
 
-  core:Print(core.addonName .. "loaded. /ad for more information.")
+
+--[[
+    -- PLAYER ENTERING WORLD --
+]]
+function events:PLAYER_ENTERING_WORLD(login, reloadUI)
+  if login or reloadUI then
+    core:Print(core.addonName .. "loaded. /ad for more information.")
+  end
 end
 
 
