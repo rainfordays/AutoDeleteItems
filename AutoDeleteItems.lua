@@ -26,8 +26,7 @@ end)
 ]]
 function events:ADDON_LOADED(name)
   if name ~= "AutoDeleteItems" then return end
-  if AutoDeleteItems == nil then AutoDeleteItems = {} end
-  AutoDeleteItems = AutoDeleteItems
+  if AutoDelete == nil then AutoDelete = {} end
 
 
   SLASH_AUTODELETEITEMS1= "/ad";
@@ -46,7 +45,7 @@ function events:VARIABLES_LOADED()
   StaticPopupDialogs["DELETE_ITEM"].button3 = "Auto-delete" -- Add third button to the delete item popup
   StaticPopupDialogs["DELETE_ITEM"].OnAlt = function(self) -- Add function for third button
     local infoType, itemID, itemLink = GetCursorInfo() -- Get cursor item info
-    AutoDeleteItems[itemLink] = true -- Add item to autodelete
+    AutoDelete[itemLink] = true -- Add item to autodelete
     DeleteCursorItem() -- Delete cursor item
   end
 
@@ -64,7 +63,7 @@ function events:BAG_UPDATE_DELAYED()
     for slot = 1, GetNumBagSlots(bag) do
       local itemLink = GetContainerItemLink(bag, slot)
       if itemLink then
-        if AutoDeleteItems[itemLink] then
+        if AutoDelete[itemLink] then
           PickupContainerItem(bag, slot)
           DeleteCursorItem()
         end
@@ -86,9 +85,9 @@ function core:SlashCommand(args)
   if command == "save" then
     local itemName = GetItemInfo(itemLinkChat) -- Make sure the subcommand is an actual itemlink
     if itemName then
-      for itemLink, _ in pairs(AutoDeleteItems) do -- Loop through autodelete items
+      for itemLink, _ in pairs(AutoDelete) do -- Loop through autodelete items
         if itemLink == itemLinkChat then -- if match is found
-          AutoDeleteItems[itemLink] = nil -- delete table entry, (making the addon NOT delete that item)
+          AutoDelete[itemLink] = nil -- delete table entry, (making the addon NOT delete that item)
           return
         end
       end
@@ -96,7 +95,7 @@ function core:SlashCommand(args)
   elseif command == "delete" then
     local itemName = GetItemInfo(itemLinkChat) -- Make sure the subcommand is an actual itemlink
     if itemName then
-      AutoDeleteItems[itemLinkChat] = true -- Add item to autodelete
+      AutoDelete[itemLinkChat] = true -- Add item to autodelete
     end
   else
     core:Print(core.addonName .. ": when you try deleting an item there will be a new button which will add that item to the auto-delete list. Other commands are listed below.")
