@@ -69,7 +69,7 @@ end
 ]]
 function events:BAG_UPDATE_DELAYED()
   for bag = 0, NUM_BAG_SLOTS do
-    for slot = 1, GetNumBagSlots(bag) do
+    for slot = 1, GetContainerNumSlots(bag) do
       local itemLink = GetContainerItemLink(bag, slot)
       if itemLink then
         if AutoDelete[itemLink] then
