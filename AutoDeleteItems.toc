@@ -4,6 +4,6 @@
 ## Notes: Automatically Delete Items
 ## Version: 1.0
 ## DefaultState: enabled
-## SavedVariablesPerCharacter: AutoDeleteItems
+## SavedVariablesPerCharacter: AutoDelete
 
 AutoDeleteItems.lua

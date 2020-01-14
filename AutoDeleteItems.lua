@@ -1,23 +1,23 @@
-local _, core = ...
+local _, A = ...
 
-function core:Print(...)
+function A:Print(...)
   DEFAULT_CHAT_FRAME:AddMessage(tostringall(...))
 end
 
 
-core.prefix = "|cff42adf5/ad|r "
-core.addonName = "|cff42adf5AutoDeleteItems|r "
+A.slashPrefix = "|cff42adf5/ad|r "
+A.addonName = "|cff42adf5AutoDeleteItems|r "
 
 
 --[[
     ---- EVENT FRAME ----
 ]]
-local events = CreateFrame("Frame")
-events:RegisterEvent("ADDON_LOADED")
-events:RegisterEvent("VARIABLES_LOADED")
-events:RegisterEvent("PLAYER_ENTERING_WORLD")
-events:RegisterEvent("BAG_UPDATE_DELAYED")
-events:SetScript("OnEvent", function(self, event, ...)
+local E = CreateFrame("Frame")
+E:RegisterEvent("ADDON_LOADED")
+E:RegisterEvent("VARIABLES_LOADED")
+E:RegisterEvent("PLAYER_ENTERING_WORLD")
+E:RegisterEvent("BAG_UPDATE_DELAYED")
+E:SetScript("OnEvent", function(self, event, ...)
   return self[event] and self[event](self, ...)
 end)
 
@@ -25,14 +25,14 @@ end)
 --[[
     -- ADDON LOADED --
 ]]
-function events:ADDON_LOADED(name)
+function E:ADDON_LOADED(name)
   if name ~= "AutoDeleteItems" then return end
   if AutoDelete == nil then AutoDelete = {} end
 
 
   SLASH_AUTODELETEITEMS1= "/ad";
   SlashCmdList.AUTODELETEITEMS = function(msg)
-    core:SlashCommand(msg)
+    A:SlashCommand(msg)
   end
 end
 
@@ -41,7 +41,7 @@ end
 --[[
     -- VARIABLES LOADED --
 ]]
-function events:VARIABLES_LOADED()
+function E:VARIABLES_LOADED()
 
   StaticPopupDialogs["DELETE_ITEM"].button3 = "Auto-delete" -- Add third button to the delete item popup
   StaticPopupDialogs["DELETE_ITEM"].OnAlt = function(self) -- Add function for third button
@@ -55,9 +55,9 @@ end
 --[[
     -- PLAYER ENTERING WORLD --
 ]]
-function events:PLAYER_ENTERING_WORLD(login, reloadUI)
+function E:PLAYER_ENTERING_WORLD(login, reloadUI)
   if login or reloadUI then
-    core:Print(core.addonName .. "loaded. /ad for more information.")
+    A:Print(A.addonName .. "loaded. /ad for more information.")
   end
 end
 
@@ -67,7 +67,7 @@ end
     -- BAG UPDATE DELAYED --
     (WE WANT THE DELAYED ONE BECAUSE IT FIRES LAST)
 ]]
-function events:BAG_UPDATE_DELAYED()
+function E:BAG_UPDATE_DELAYED()
   for bag = 0, NUM_BAG_SLOTS do
     for slot = 1, GetContainerNumSlots(bag) do
       local itemLink = GetContainerItemLink(bag, slot)
@@ -87,29 +87,50 @@ end
 --[[
     ---- SLASH COMMANDS ----
 ]]
-function core:SlashCommand(args)
-  local command, itemLinkChat, rest = strsplit(" ", args, 3) -- Split args to a command and itemlink
+function A:SlashCommand(args)
+  local command, rest = strsplit(" ", args, 2) -- Split args to a command and itemlink
   command = command:lower() -- command to lowercase for easier detection
 
   if command == "save" then
-    local itemName = GetItemInfo(itemLinkChat) -- Make sure the subcommand is an actual itemlink
+    local itemName = GetItemInfo(rest) -- Make sure the subcommand is an actual itemlink
     if itemName then
       for itemLink, _ in pairs(AutoDelete) do -- Loop through autodelete items
-        if itemLink == itemLinkChat then -- if match is found
+        if itemLink == rest then -- if match is found
           AutoDelete[itemLink] = nil -- delete table entry, (making the addon NOT delete that item)
           return
         end
       end
     end
+
   elseif command == "delete" then
-    local itemName = GetItemInfo(itemLinkChat) -- Make sure the subcommand is an actual itemlink
+    local itemName = GetItemInfo(rest) -- Make sure the subcommand is an actual itemlink
     if itemName then
-      AutoDelete[itemLinkChat] = true -- Add item to autodelete
+      AutoDelete[rest] = true -- Add item to autodelete
     end
+
+  elseif command == "list" then
+    if A:Count(AutoDelete) > 0 then
+      A:Print(A.addonName .. "- Deleting these items.")
+      for i, _ in pairs(AutoDelete) do
+        A:Print(i)
+      end
+    else
+      A:Print(A.addonName .. "- No items being auto-deleted.")
+    end
+
   else
-    core:Print(core.addonName .. ": when you try deleting an item there will be a new button which will add that item to the auto-delete list. Other commands are listed below.")
-    core:Print("Available commands")
-    core:Print(core.prefix.."delete [item link]: delete the linked item")
-    core:Print(core.prefix.."save [item link]: do NOT delete the linked item")
+    A:Print(A.addonName .. ": when you try deleting an item there will be a new button which will add that item to the auto-delete list. Other commands are listed below.")
+    A:Print("Available commands")
+    A:Print(A.slashPrefix.."delete [item link]: delete the linked item")
+    A:Print(A.slashPrefix.."save [item link]: do NOT delete the linked item")
   end
+end
+
+
+function A:Count(T)
+  local i = 0
+  for _,_ in pairs(T) do
+    i = i+1
+  end
+  return i
 end
