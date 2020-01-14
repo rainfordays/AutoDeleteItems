@@ -123,6 +123,7 @@ function A:SlashCommand(args)
     A:Print("Available commands")
     A:Print(A.slashPrefix.."delete [item link]: delete the linked item")
     A:Print(A.slashPrefix.."save [item link]: do NOT delete the linked item")
+    A:Print(A.slashPrefix.."list: list items being auto-deleted")
   end
 end
 
