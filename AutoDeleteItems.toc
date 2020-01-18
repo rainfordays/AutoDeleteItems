@@ -2,7 +2,7 @@
 ## Title: AutoDeleteItems
 ## Author: RainForDays
 ## Notes: Automatically Delete Items
-## Version: 1.1
+## Version: 2.0
 ## DefaultState: enabled
 ## SavedVariablesPerCharacter: AutoDelete
 
