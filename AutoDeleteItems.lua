@@ -29,6 +29,19 @@ function E:ADDON_LOADED(name)
   if name ~= "AutoDeleteItems" then return end
   if AutoDelete == nil then AutoDelete = {} end
 
+  for itemLink, _ in pairs(AutoDelete) do
+    if string.find(itemLink, "Hitem") then
+      local itemName, _ = GetItemInfo(itemLink)
+      AutoDelete[itemLink] = nil
+      AutoDelete[itemName] = {itemLink = itemLink}
+    end
+  end
+
+  for itemLink, _ in pairs(AutoDelete) do
+    if string.find(itemLink, "Hitem") then
+      AutoDelete[itemLink] = nil
+    end
+  end
 
   SLASH_AUTODELETEITEMS1= "/ad";
   SlashCmdList.AUTODELETEITEMS = function(msg)
@@ -46,7 +59,8 @@ function E:VARIABLES_LOADED()
   StaticPopupDialogs["DELETE_ITEM"].button3 = "Auto-delete" -- Add third button to the delete item popup
   StaticPopupDialogs["DELETE_ITEM"].OnAlt = function(self) -- Add function for third button
     local infoType, itemID, itemLink = GetCursorInfo() -- Get cursor item info
-    AutoDelete[itemLink] = true -- Add item to autodelete
+    local itemName = GetItemInfo(itemLink)
+    AutoDelete[itemName] = {itemLink = itemLink} -- Add item to autodelete
     DeleteCursorItem() -- Delete cursor item
   end
 end
@@ -72,7 +86,8 @@ function E:BAG_UPDATE_DELAYED()
     for slot = 1, GetContainerNumSlots(bag) do
       local itemLink = GetContainerItemLink(bag, slot)
       if itemLink then
-        if AutoDelete[itemLink] then
+        local itemName = GetItemInfo(itemLink)
+        if AutoDelete[itemName] then
           PickupContainerItem(bag, slot)
           DeleteCursorItem()
         end
@@ -92,27 +107,29 @@ function A:SlashCommand(args)
   command = command:lower() -- command to lowercase for easier detection
 
   if command == "save" then
-    local itemName = GetItemInfo(rest) -- Make sure the subcommand is an actual itemlink
+    local itemName, itemLink = GetItemInfo(rest) -- Make sure the subcommand is an actual itemlink
     if itemName then
-      for itemLink, _ in pairs(AutoDelete) do -- Loop through autodelete items
-        if itemLink == rest then -- if match is found
-          AutoDelete[itemLink] = nil -- delete table entry, (making the addon NOT delete that item)
+      for itemNameSaved, data in pairs(AutoDelete) do -- Loop through autodelete items
+        if itemName == itemNameSaved then -- if match is found
+          AutoDelete[itemName] = nil -- delete table entry, (making the addon NOT delete that item)
+          core:Print(A.addonName .. "no longer deleting " .. itemLink)
           return
         end
       end
     end
 
   elseif command == "delete" then
-    local itemName = GetItemInfo(rest) -- Make sure the subcommand is an actual itemlink
+    local itemName, itemLink = GetItemInfo(rest) -- Make sure the subcommand is an actual itemlink
     if itemName then
-      AutoDelete[rest] = true -- Add item to autodelete
+      AutoDelete[itemName] = {itemLink = itemLink} -- Add item to autodelete
+      core:Print(A.addonName .. " auto-deleting " .. itemLink)
     end
 
   elseif command == "list" then
     if A:Count(AutoDelete) > 0 then
       A:Print(A.addonName .. "- Deleting these items.")
-      for i, _ in pairs(AutoDelete) do
-        A:Print(i)
+      for itemName, data in pairs(AutoDelete) do
+        A:Print(data.itemLink)
       end
     else
       A:Print(A.addonName .. "- No items being auto-deleted.")
