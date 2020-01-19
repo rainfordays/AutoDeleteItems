@@ -112,7 +112,7 @@ function A:SlashCommand(args)
       for itemNameSaved, data in pairs(AutoDelete) do -- Loop through autodelete items
         if itemName == itemNameSaved then -- if match is found
           AutoDelete[itemName] = nil -- delete table entry, (making the addon NOT delete that item)
-          core:Print(A.addonName .. "no longer deleting " .. itemLink)
+          A:Print(A.addonName .. "no longer deleting " .. itemLink)
           return
         end
       end
@@ -122,7 +122,7 @@ function A:SlashCommand(args)
     local itemName, itemLink = GetItemInfo(rest) -- Make sure the subcommand is an actual itemlink
     if itemName then
       AutoDelete[itemName] = {itemLink = itemLink} -- Add item to autodelete
-      core:Print(A.addonName .. " auto-deleting " .. itemLink)
+      A:Print(A.addonName .. " auto-deleting " .. itemLink)
     end
 
   elseif command == "list" then
