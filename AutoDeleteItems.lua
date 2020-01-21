@@ -16,7 +16,7 @@ local E = CreateFrame("Frame")
 E:RegisterEvent("ADDON_LOADED")
 E:RegisterEvent("VARIABLES_LOADED")
 E:RegisterEvent("PLAYER_ENTERING_WORLD")
-E:RegisterEvent("BAG_UPDATE_DELAYED")
+E:RegisterEvent("BAG_UPDATE")
 E:SetScript("OnEvent", function(self, event, ...)
   return self[event] and self[event](self, ...)
 end)
@@ -81,20 +81,17 @@ end
     -- BAG UPDATE DELAYED --
     (WE WANT THE DELAYED ONE BECAUSE IT FIRES LAST)
 ]]
-function E:BAG_UPDATE_DELAYED()
-  for bag = 0, NUM_BAG_SLOTS do
-    for slot = 1, GetContainerNumSlots(bag) do
-      local itemLink = GetContainerItemLink(bag, slot)
-      if itemLink then
-        local itemName = GetItemInfo(itemLink)
-        if AutoDelete[itemName] then
-          PickupContainerItem(bag, slot)
-          DeleteCursorItem()
-        end
+function E:BAG_UPDATE(B)
+  for S = 1, GetContainerNumSlots(B) do
+    local itemLink = GetContainerItemLink(B, S)
+    if itemLink then
+      local itemName = GetItemInfo(itemLink)
+      if AutoDelete[itemName] then
+        PickupContainerItem(B, S)
+        DeleteCursorItem()
       end
     end
   end
-
 end
 
 
