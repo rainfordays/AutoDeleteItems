@@ -92,8 +92,7 @@ end
 
 
 --[[
-    -- BAG UPDATE DELAYED --
-    (WE WANT THE DELAYED ONE BECAUSE IT FIRES LAST)
+    -- BAG UPDATE --
 ]]
 function E:BAG_UPDATE(B)
   for S = 1, GetContainerNumSlots(B) do
