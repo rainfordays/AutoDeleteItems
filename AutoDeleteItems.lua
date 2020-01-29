@@ -17,6 +17,7 @@ E:RegisterEvent("ADDON_LOADED")
 E:RegisterEvent("VARIABLES_LOADED")
 E:RegisterEvent("PLAYER_ENTERING_WORLD")
 E:RegisterEvent("BAG_UPDATE")
+E:RegisterEvent("START_LOOT_ROLL")
 E:SetScript("OnEvent", function(self, event, ...)
   return self[event] and self[event](self, ...)
 end)
@@ -72,6 +73,19 @@ end
 function E:PLAYER_ENTERING_WORLD(login, reloadUI)
   if login or reloadUI then
     A:Print(A.addonName .. "loaded. /ad for more information.")
+  end
+end
+
+
+--[[
+    -- START LOOT ROLL --
+]]
+function E:START_LOOT_ROLL(rollID, rollTimer)
+  _, rollItemName = GetLootRollItemInfo(rollID)
+  for ADitemName, table in pairs(AutoDelete) do
+    if rollitemName == ADitemName then
+      RollOnLoot(rollID, nil)
+    end
   end
 end
 
