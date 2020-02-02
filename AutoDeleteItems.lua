@@ -81,11 +81,10 @@ end
     -- START LOOT ROLL --
 ]]
 function E:START_LOOT_ROLL(rollID, rollTimer)
-  _, rollItemName = GetLootRollItemInfo(rollID)
-  for ADitemName, table in pairs(AutoDelete) do
-    if rollitemName == ADitemName then
-      RollOnLoot(rollID, nil)
-    end
+  local _, rollItemName = GetLootRollItemInfo(rollID)
+
+  if AutoDelete[rollItemName] then
+    RollOnLoot(rollID, 0)
   end
 end
 
