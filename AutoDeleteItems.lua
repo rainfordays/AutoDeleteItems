@@ -5,7 +5,7 @@ function A:Print(...)
 end
 
 
-A.slashPrefix = "|cff42adf5/ad|r "
+A.slashPrefix = "|cff42adf5/adi|r "
 A.addonName = "|cff42adf5AutoDeleteItems|r "
 
 
@@ -44,7 +44,7 @@ function E:ADDON_LOADED(name)
     end
   end
 
-  SLASH_AUTODELETEITEMS1= "/ad";
+  SLASH_AUTODELETEITEMS1= "/adi";
   SlashCmdList.AUTODELETEITEMS = function(msg)
     A:SlashCommand(msg)
   end
@@ -72,7 +72,7 @@ end
 ]]
 function E:PLAYER_ENTERING_WORLD(login, reloadUI)
   if login or reloadUI then
-    A:Print(A.addonName .. "loaded. /ad for more information.")
+    A:Print(A.addonName .. "loaded. /adi for more information.")
   end
 end
 
