@@ -3,7 +3,6 @@ local _, A = ...
 function A:Print(...)
   DEFAULT_CHAT_FRAME:AddMessage(A.addonName .. "- " .. tostringall(...))
 end
-end
 
 
 A.slashPrefix = "|cff8d63ff/adi|r "
