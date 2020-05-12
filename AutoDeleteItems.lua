@@ -1,12 +1,13 @@
 local _, A = ...
 
 function A:Print(...)
-  DEFAULT_CHAT_FRAME:AddMessage(tostringall(...))
+  DEFAULT_CHAT_FRAME:AddMessage(A.addonName .. "- " .. tostringall(...))
+end
 end
 
 
-A.slashPrefix = "|cff42adf5/adi|r "
-A.addonName = "|cff42adf5AutoDeleteItems|r "
+A.slashPrefix = "|cff8d63ff/adi|r "
+A.addonName = "|cff8d63ffAutoDeleteItems|r "
 
 
 --[[
