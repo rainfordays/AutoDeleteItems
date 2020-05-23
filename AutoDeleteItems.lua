@@ -30,7 +30,7 @@ function E:ADDON_LOADED(name)
   if name ~= "AutoDeleteItems" then return end
 
   AutoDelete = AutoDelete or {}
-  ADI_loginMessage = ADI_loginMessage or true
+  ADI_loginMessage = ADI_loginMessage or false
 
   for itemLink, _ in pairs(AutoDelete) do
     if string.find(itemLink, "Hitem") then
@@ -75,7 +75,7 @@ end
 ]]
 function E:PLAYER_ENTERING_WORLD(login, reloadUI)
   if (login or reloadUI) and ADI_loginMessage and A.loaded then
-    print(A.addonName .. "loaded.")
+    print(A.addonName .. "loaded")
   end
 end
 
