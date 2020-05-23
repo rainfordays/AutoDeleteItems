@@ -72,7 +72,7 @@ end
 ]]
 function E:PLAYER_ENTERING_WORLD(login, reloadUI)
   if login or reloadUI then
-    A:Print(A.addonName .. "loaded. /adi for more information.")
+    --print(A.addonName .. "loaded. "..A.slashPrefix.."for settings.")
   end
 end
 
