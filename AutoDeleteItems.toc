@@ -4,6 +4,6 @@
 ## Notes: Automatically Delete Items
 ## Version: 2.2
 ## DefaultState: enabled
-## SavedVariablesPerCharacter: AutoDelete
+## SavedVariablesPerCharacter: AutoDelete, ADI_loginMessage
 
 AutoDeleteItems.lua
