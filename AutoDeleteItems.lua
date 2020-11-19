@@ -16,11 +16,35 @@ local E = CreateFrame("Frame")
 E:RegisterEvent("ADDON_LOADED")
 E:RegisterEvent("VARIABLES_LOADED")
 E:RegisterEvent("PLAYER_ENTERING_WORLD")
-E:RegisterEvent("BAG_UPDATE")
-E:RegisterEvent("START_LOOT_ROLL")
 E:SetScript("OnEvent", function(self, event, ...)
   return self[event] and self[event](self, ...)
 end)
+
+
+local M = CreateFrame("Button", "ADIMacroButton", UIParent, "SecureActionButtonTemplate")
+M:RegisterForClicks("LeftButton")
+M:SetAttribute("*type1", "macro")
+
+local macrotext = [[/run 
+  for B = 0, NUM_BAG_SLOTS do
+    for S = 1, GetContainerNumSlots(B) do
+      local itemLink = GetContainerItemLink(B, S);
+      if itemLink then
+        local itemName = GetItemInfo(itemLink);
+        if AutoDelete[itemName] then
+          PickupContainerItem(B, S);
+          DeleteCursorItem();
+          return
+        end
+      end
+    end
+  end
+]]
+--"/run for B = 0, NUM_BAG_SLOTS do for S = 1, GetContainerNumSlots(B) do local itemLink = GetContainerItemLink(B, S); if itemLink then local itemName = GetItemInfo(itemLink); if AutoDelete[itemName] then PickupContainerItem(B, S); DeleteCursorItem(); return end end end end"
+macrotext = string.gsub(macrotext, "[\n\r]", "")
+macrotext = string.gsub(macrotext, " +", " ")
+
+M:SetAttribute("macrotext", macrotext)
 
 
 --[[
@@ -67,6 +91,15 @@ function E:VARIABLES_LOADED()
     AutoDelete[itemName] = {itemLink = itemLink} -- Add item to autodelete
     DeleteCursorItem() -- Delete cursor item
   end
+
+
+  StaticPopupDialogs["DELETE_GOOD_ITEM"].button3 = "Auto-delete"
+  StaticPopupDialogs["DELETE_GOOD_ITEM"].OnAlt = function(self) -- Add function for third button
+    local infoType, itemID, itemLink = GetCursorInfo() -- Get cursor item info
+    local itemName = GetItemInfo(itemLink)
+    AutoDelete[itemName] = {itemLink = itemLink} -- Add item to autodelete
+    DeleteCursorItem() -- Delete cursor item
+  end
 end
 
 
@@ -76,36 +109,6 @@ end
 function E:PLAYER_ENTERING_WORLD(login, reloadUI)
   if (login or reloadUI) and ADI_loginMessage and A.loaded then
     print(A.addonName .. "loaded")
-  end
-end
-
-
---[[
-    -- START LOOT ROLL --
-]]
-function E:START_LOOT_ROLL(rollID, rollTimer)
-  local _, rollItemName = GetLootRollItemInfo(rollID)
-
-  if AutoDelete[rollItemName] then
-    RollOnLoot(rollID, 0)
-  end
-end
-
-
-
---[[
-    -- BAG UPDATE --
-]]
-function E:BAG_UPDATE(B)
-  for S = 1, GetContainerNumSlots(B) do
-    local itemLink = GetContainerItemLink(B, S)
-    if itemLink then
-      local itemName = GetItemInfo(itemLink)
-      if AutoDelete[itemName] then
-        PickupContainerItem(B, S)
-        DeleteCursorItem()
-      end
-    end
   end
 end
 
